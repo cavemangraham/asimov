@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sender_id: MyString
+  first_name: MyString
+  last_name: MyString
+  current_story_node: MyString
+  bot_alive: false
+  bot_evil: false
+
+two:
+  sender_id: MyString
+  first_name: MyString
+  last_name: MyString
+  current_story_node: MyString
+  bot_alive: false
+  bot_evil: false
