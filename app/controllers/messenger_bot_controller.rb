@@ -6,7 +6,17 @@ class MessengerBotController < ActionController::Base
     sender_id = event['sender']['id']
     passed_sender = sender
 
-    @player = Player.where(sender_id: sender_id, first_name: first_name[:body]["first_name"], last_name: last_name[:body]["last_name"]).first_or_create
+
+    if Player.where(sender_id: sender_id).empty?
+
+      username = "backdoor_" + Devise.friendly_token.first(4)
+      password = Devise.friendly_token.first(6)
+      email = Devise.friendly_token.first(6) + "@gmail.com"
+
+      Player.create!(sender_id: sender_id, first_name: first_name[:body]["first_name"], last_name: last_name[:body]["last_name"], username: username, password: password, plain_password: password, email: email)
+    end
+
+    @player = Player.where(sender_id: sender_id).first
 
     unless @player.current_story_node.nil?
       dialogue(@player.current_story_node, sender_id, passed_sender)

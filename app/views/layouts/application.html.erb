@@ -9,6 +9,14 @@
   </head>
 
   <body>
+    <p>
+    <% if player_signed_in? %>
+      <div>Signed in as... <%= current_player.first_name + " " + current_player.last_name %></div>
+    <% end %>
+    </p>
+    <p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p>
+
     <%= yield %>
   </body>
 </html>
