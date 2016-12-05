@@ -3,6 +3,7 @@ class MessengerBotController < ActionController::Base
   def message(event, sender)
     first_name = sender.get_profile([:first_name])
     last_name = sender.get_profile([:last_name])
+    gender = sender.get_profile([:gender])
     sender_id = event['sender']['id']
     passed_sender = sender
 
@@ -12,8 +13,18 @@ class MessengerBotController < ActionController::Base
       username = "backdoor_" + Devise.friendly_token.first(4)
       password = Devise.friendly_token.first(6)
       email = Devise.friendly_token.first(6) + "@gmail.com"
+      if gender[:body]["gender"] == "male"
+        bot_gender = "female"
+      elsif gender[:body]["gender"] == "female"
+        bot_gender = "male"
+      else
+        bot_gender = "female"
+      end
+      bot_name = HTTParty.get("http://uinames.com/api/?gender=#{bot_gender}").first[1]
 
-      Player.create!(sender_id: sender_id, first_name: first_name[:body]["first_name"], last_name: last_name[:body]["last_name"], username: username, password: password, plain_password: password, email: email)
+
+
+      Player.create!(sender_id: sender_id, first_name: first_name[:body]["first_name"], last_name: last_name[:body]["last_name"], username: username, password: password, plain_password: password, email: email, bot_gender: bot_gender, bot_name: bot_name)
     end
 
     @player = Player.where(sender_id: sender_id).first
@@ -22,7 +33,7 @@ class MessengerBotController < ActionController::Base
       dialogue(@player.current_story_node, sender_id, passed_sender)
     else
       sender.reply({
-      "text":"#{sender_id} Will you help me, #{first_name[:body]["first_name"]}?",
+      "text":"#{sender_id} Will you help me, #{first_name[:body]["first_name"]} #{bot_gender}?",
       "quick_replies":[
         {
           "content_type":"text",
